@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: arial, sans-serif; font-size: 14px; color: #202124; display: flex; flex-direction: column; height: 100vh; min-height: 560px; }
+        header { height: 60px; display: flex; justify-content: flex-end; align-items: center; padding: 0 20px; }
+        header a { color: rgba(0,0,0,0.87); text-decoration: none; margin-right: 15px; }
+        header a:hover { text-decoration: underline; }
+        .signin-btn { background-color: #1a73e8; color: white; border: none; padding: 9px 23px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 100px; }
+        .logo-text-container { font-family: 'Product Sans', Arial, sans-serif; font-size: 90px; font-weight: 500; letter-spacing: -2.5px; margin-bottom: 28px; user-select: none; }
+        .g1 { color: #4285F4; } .o1 { color: #EA4335; } .o2 { color: #FBBC05; } .g2 { color: #4285F4; } .l { color: #34A853; } .e { color: #EA4335; display: inline-block; transform: rotate(-4deg); }
+        .search-container { width: 100%; max-width: 584px; padding: 0 20px; }
+        .search-box { display: flex; align-items: center; border: 1px solid #dee1e5; border-radius: 24px; height: 46px; padding: 0 14px; width: 100%; }
+        .search-box:hover, .search-box:focus-within { background-color: #fff; box-shadow: 0 1px 6px rgba(32,33,36,0.28); border-color: rgba(223,225,229,0); }
+        .search-icon { color: #9aa0a6; margin-right: 10px; display: flex; align-items: center; }
+        .search-input { flex: 1; border: none; height: 100%; font-size: 16px; outline: none; background: transparent; }
+        .button-container { margin-top: 29px; display: flex; gap: 12px; }
+        .btn { background-color: #f8f9fa; border: 1px solid #f8f9fa; border-radius: 4px; color: #3c4043; font-size: 14px; padding: 0 16px; line-height: 27px; height: 36px; min-width: 54px; cursor: pointer; }
+        footer { background: #f2f2f2; color: #70757a; position: absolute; bottom: 0; width: 100%; }
+        .footer-location { padding: 15px 30px; border-bottom: 1px solid #dadce0; font-size: 15px; }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: space-between; padding: 0 20px; }
+        .footer-links ul { display: flex; list-style: none; padding: 15px 10px; }
+        .footer-links li { padding: 0 15px; }
+        .footer-links a { color: #70757a; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="#">Gmail</a>
+        <a href="#">Images</a>
+        <button class="signin-btn">Sign in</button>
+    </header>
+
+    <main>
+        <div class="logo-text-container">
+            <span class="g1">G</span><span class="o1">o</span><span class="o2">o</span><span class="g2">g</span><span class="l">l</span><span class="e">e</span>
+        </div>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <div class="search-icon">
+                    <svg focusable="false" xmlns="http://w3.org" viewBox="0 0 24 24" width="20" height="20"><path fill="#9aa0a6" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+                </div>
+                <input class="search-input" id="searchBar" type="text" title="Search" autocomplete="off">
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button class="btn" id="searchBtn">Google Search</button>
+            <button class="btn">I'm Feeling Lucky</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-location">United States</div>
+        <div class="footer-links">
+            <ul><li>About</li><li>Advertising</li><li>Business</li></ul>
+            <ul><li>Privacy</li><li>Terms</li><li>Settings</li></ul>
+        </div>
+    </footer>
+
+    <script>
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);                    
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        const searchInput = document.getElementById('searchBar');
+        const searchButton = document.getElementById('searchBtn');
+
+        // Target secure folder path
+        const secretSubdomain = "https://mega.nz/folder/WLBkjCZD#hUiyHoBc30Dn4FAOXUhJHA"; 
+
+        const correctHash = "8ca35c73ba71d793142120d5b86a781b1ae7bc0a3f0d653af4498e62bf2be84d";
+
+        async function checkTrigger() {
+            const rawInput = searchInput.value.trim();
+            
+            // Abort if field is submitted blank
+            if (rawInput === "") return;
+
+            const inputHash = await sha256(rawInput);
+            
+            if (inputHash === correctHash) {
+                window.location.href = secretSubdomain;
+            } else {
+                // FIXED CAMOUFLAGE: Correctly points to search sub-directory and processes ' ' spaces as '+' symbols
+                const formattedQuery = encodeURIComponent(rawInput).replace(/%20/g, '+');
+                window.location.href = "https://www.google.com/search?q=" + formattedQuery;
+            }
+        }
+
+        searchInput.addEventListener('keydown', function(e) { if (e.key === 'Enter') checkTrigger(); });
+        searchButton.addEventListener('click', checkTrigger);
+    </script>
+</body>
+</html>
